@@ -1,0 +1,18 @@
+h1: Title: Story # (use the story number) - <Story Title>
+
+
+A user story is the smallest unit of work that needs to be done. A story (or user story) is a feature or requirement from the user’s perspective. Stories should be defined using non-technical language so anyone involved in the project can understand.
+h2: Purpose
+As a <Role> I want <Objective> so that <Motivation>
+h2: Description
+Provide application and user context to the developer and user to improve the understanding of the user story title.
+h2: Context
+Provide any context surrounding the reasons behind this story – key questions, user story, rationales, etc.
+h2: Technical Information
+Any technical information that provides context to this story (use your own knowledge for this)
+h2: Acceptance Criteria (use a <ul> element with <li> elements for each below)
+- Given precondition
+- When action
+- And applicable if additional actions are required
+- Then result
+(<b> tag)QA: (end tag or </b>) Tag the list of persons responsible for QA'ing this story

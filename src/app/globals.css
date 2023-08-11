@@ -2,6 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.2em;
+  margin-top: 0.5em;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.25;
+  margin-top: 0.5em;
+  margin-bottom: 0.25em;
+}
+
+ul {
+  list-style: outside;
+  padding: 0;
+  margin-left: 1em;
+}
+
+li{
+  margin-bottom: 0.5em;
+
+}
+
+.content {
+  max-width: 800px;
+  margin-right: 100px;
+  background-color: #151e2b;
+  padding: 2em;
+}
+
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;

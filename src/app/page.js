@@ -1,113 +1,143 @@
-import Image from 'next/image'
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
+import icon from "@/assets/Icon.gif";
+import Image from "next/image";
 
 export default function Home() {
+  const [file, setFile] = useState(null);
+  const [res, setRes] = useState(null); // [status, message]
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (!file) {
+        throw new Error("No file provided");
+      } else if (file.name.split(".").pop() !== "docx") {
+        toast({
+          variant: "destructive",
+          title: "Invalid file type",
+          description: "Please upload a .docx file",
+        });
+        throw new Error("Invalid file type");
+      }
+
+      const data = new FormData();
+      data.set("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: data,
+      });
+      // handle the error
+      if (!res.ok) {
+        throw new Error(await res.text());
+      }
+
+      setRes(["success", "File uploaded successfully!"]);
+    } catch (e) {
+      let title, description;
+      // Handle errors here
+      if (e.message === "No file provided") {
+        title = "No file provided";
+        description = "Please upload a file";
+      } else if (e.message === "Invalid file type") {
+        title = "Invalid file type";
+        description = "Please upload a .docx file";
+      } else {
+        title = "Error";
+        description = "Something went wrong";
+      }
+      setRes([title, description]);
+    }
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className="flex flex-col min-h-screen p-40 max-w-[1000px] justify-between items-center gap-50">
+      {/*This should probably be a component*/}
+      {!res ? (
+        <div className=" text-center font-light">
+          {" "}
+          <h1 className="text-4xl text-mediumf">Project Brief Translator</h1>
+          Simple tool to translate a complicatated project brief into easy to
+          understand user stories that you can implement! Download your project
+          prief as a .docx and insert it here for it to be turned into a user
+          stories.
         </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+      ) : (
+        <></>
+      )}
+      <form onSubmit={(e) => onSubmit(e)}>
+        <div className="flex items-center justify-center gap-5">
+          {res == null ? (
+            <input
+              type="file"
+              name="file"
+              onChange={(e) => setFile(e.target.files?.[0])}
+              className="border border-gray-300 rounded-md p-2 block"
+            />
+          ) : (
+            <div className=" rounded-xl p-4 m-9 flex flex-col items-start border gap-4  bg-slate-900 border-gray-400">
+              <h1 className="text-4xl font-medium">{res[0]}</h1>
+              <p>
+                File Name:{" "}
+                <span className="text-center text-large font-medium underline text-sky-700">
+                  {file.name}
+                </span>
+              </p>
+              <p className="text-center font-bold">{res[1]}</p>
+            </div>
+          )}
+          {res == null ? (
+            <button
+              type={file === null ? "button" : "submit"}
+              className={`border border-slate-200 rounded-xl p-2 max-w-sm  ${
+                file === null
+                  ? "hover:bg-zinc-500 hover:border-none hover:text-zinc-200"
+                  : "hover:bg-slate-900 hover:text-white hover:border-none"
+              }`}
+            >
+              Upload
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="border border-gray-400 rounded-xl p-2 max-w-lg hover:bg-slate-900 hover:text-white hover:border-none"
+              onClick={() => {
+                if (res[0] === "success") {
+                  router.push("/prompt");
+                } else {
+                  setRes(null);
+                  setFile(null);
+                }
+              }}
+            >
+              Continue
+            </button>
+          )}
+        </div>
+      </form>
+      {res == null ? (
+        <div className="flex  items-center justify-between gap-5">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="w-auto h-40 fill-white">
+            <path d="M 20.875 2.5625 L 20.1875 3.3125 L 18.5 5.09375 L 14.90625 5.09375 L 14.90625 8.59375 L 13.1875 10.40625 L 12.5 11.125 L 14.6875 13.3125 L 3.03125 25 L 2.3125 25.71875 L 3.03125 26.40625 L 6.3125 29.6875 L 7 28.96875 L 18.6875 17.3125 L 20.875 19.5 L 21.59375 18.8125 L 23.40625 17.09375 L 26.90625 17.09375 L 26.90625 13.5 L 28.6875 11.8125 L 29.4375 11.125 L 26.90625 8.59375 L 26.90625 5.09375 L 23.40625 5.09375 Z M 20.90625 5.4375 L 22.28125 6.8125 L 22.59375 7.09375 L 24.90625 7.09375 L 24.90625 9.40625 L 25.1875 9.71875 L 26.5625 11.09375 L 25.21875 12.375 L 24.90625 12.65625 L 24.90625 15.09375 L 22.59375 15.09375 L 22.3125 15.375 L 20.90625 16.71875 L 20.09375 15.90625 L 24.625 11.375 L 20.65625 7.40625 L 19.9375 8.09375 L 16.125 11.9375 L 15.28125 11.09375 L 16.625 9.6875 L 16.90625 9.40625 L 16.90625 7.09375 L 19.34375 7.09375 L 19.625 6.78125 Z M 20.65625 10.21875 L 21.78125 11.375 L 6.3125 26.875 L 5.15625 25.71875 Z M 19 21 L 19 22 L 18 22 L 18 24 L 19 24 L 19 25 L 21 25 L 21 24 L 22 24 L 22 22 L 21 22 L 21 21 Z M 25 23 L 25 25 L 23 25 L 23 27 L 25 27 L 25 29 L 27 29 L 27 27 L 29 27 L 29 25 L 27 25 L 27 23 Z" />
+          </svg>
+          <div className="flex flex-col gap-3">
+            <h1 className="font-medium font-2xl">Ditch steps A to B</h1>
+            <div className="font-light">
+              No more back to back calls and googling technical jargon! Submit
+              your project brief and get the user stories that you need in the
+              format you want them.
+            </div>
+          </div>
+        </div>
+      ) : (
+        <></>
+      )}
+    </div>
+  );
 }
