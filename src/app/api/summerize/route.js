@@ -43,7 +43,7 @@ export async function POST(req) {
 
   console.log("User context:" + context);
 
-  const storyTemplate = await readFile("public/user.txt", "utf-8");
+  const storyTemplate = await readFile("user.txt", "utf-8");
   const prompt =
     "Generate 10 user stories based on the project brief for the specificed customer within it. " +
     "The user stories should be returned as html, with a div (div should have a class name of content) surrounding all content and no newlines or anything else." +
