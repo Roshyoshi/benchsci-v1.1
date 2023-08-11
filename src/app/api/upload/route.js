@@ -16,15 +16,12 @@ export async function POST(request) {
 
     console.log(file);
 
-    //If current file exists, delete it
-    try {
-      //TODO: Delete file in firestore
-    } catch (err) {
-      console.log(err);
-    }
-
     //TODO: Create DocxLoader and load file
     const loader = new DocxLoader(file);
+
+    console.log(loader)
+
+    
     const document = await loader.load();
 
     //TODO: convert Docxloader to JSON
@@ -52,7 +49,6 @@ export async function POST(request) {
     });
     console.log("Document successfully written:" + docRef.id);
     const response = docRef.id;
-
 
     return NextResponse.json({ success: true, text: response });
   } catch (err) {
