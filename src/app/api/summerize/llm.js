@@ -6,12 +6,11 @@ import { loadQARefineChain } from "langchain/chains";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { HumanMessage } from "langchain/schema";
-import { DocxLoader } from "langchain/document_loaders/fs/docx"
+import { DocxLoader } from "langchain/document_loaders/fs/docx";
 
 export default async function llmHandle(text, document) {
   try {
-    
-    const APIKey = process.env.OPENAI_API_KEY; 
+    const APIKey = process.env.OPENAI_API_KEY;
     const model = new OpenAI({
       temperature: 0,
       frequencyPenalty: 0.1,
@@ -24,11 +23,21 @@ export default async function llmHandle(text, document) {
 
     const startTime = Date.now();
 
+    console.log(document);
+
     console.log("Starting generation task...(this may take a while)");
-    const res = await chain.call({
-      input_documents: document,
-      question: text,
-    });
+    const callChain = async () => {
+      try {
+        await chain.call({
+          input_documents: [document],
+          question: text,
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    const res = await callChain();
+
     const endTime = Date.now();
     console.log("Generation task completed!");
     console.log(" Result \n --------- \n" + res.output_text);

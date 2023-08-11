@@ -1,6 +1,8 @@
 import { writeFile } from "fs/promises";
+import { extractRawText } from "mammoth";
 import { NextResponse } from "next/server";
-import { DocxLoader } from "langchain/document_loaders/fs/docx";
+import { Document } from "langchain/document";
+
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc, doc } from "firebase/firestore";
 import fs from "fs";
@@ -9,6 +11,7 @@ export async function POST(request) {
   try {
     const data = await request.formData();
     const file = data.get("file");
+    const buffer = await file.arrayBuffer();
 
     if (!file) {
       return NextResponse.json({ success: false });
@@ -17,12 +20,12 @@ export async function POST(request) {
     console.log(file);
 
     //TODO: Create DocxLoader and load file
-    const loader = new DocxLoader(file);
-
-    console.log(loader)
-
+    const text = await extractRawText({ buffer })
     
-    const document = await loader.load();
+    
+    const document = new Document({
+      pageContent: text.value
+    });
 
     //TODO: convert Docxloader to JSON
     const json = JSON.stringify(document);
