@@ -13,6 +13,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <link rel="icon" href="@/app/favicon.ico" />
+      </head>
       <body className={rubik.className}>
         <Header />
       <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-slate-800 text-white">

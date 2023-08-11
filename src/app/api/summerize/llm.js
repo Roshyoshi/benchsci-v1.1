@@ -11,11 +11,7 @@ import { DocxLoader } from "langchain/document_loaders/fs/docx"
 export default async function llmHandle(text) {
   try {
     
-    //Api key for gpt-4 below
-    //const APIKey = "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"
-    
-    //Api key for any other model below
-    const APIKey = "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"
+    const APIKey = process.env.OPENAI_API_KEY; 
     const model = new OpenAI({
       temperature: 0,
       frequencyPenalty: 0.1,
