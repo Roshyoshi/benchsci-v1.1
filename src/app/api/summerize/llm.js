@@ -28,11 +28,11 @@ export default async function llmHandle(text, document) {
     console.log("Starting generation task...(this may take a while)");
     const callChain = async () => {
       try {
-        res = await chain.call({
+        const result = await chain.call({
           input_documents: [document],
           question: text,
         });
-        return res
+        return result
       } catch (err) {
         console.log(err);
       }
