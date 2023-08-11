@@ -8,7 +8,7 @@ import { ChatOpenAI } from "langchain/chat_models/openai";
 import { HumanMessage } from "langchain/schema";
 import { DocxLoader } from "langchain/document_loaders/fs/docx"
 
-export default async function llmHandle(text) {
+export default async function llmHandle(text, document) {
   try {
     
     const APIKey = process.env.OPENAI_API_KEY; 
@@ -22,14 +22,11 @@ export default async function llmHandle(text) {
 
     const chain = await loadQARefineChain(model);
 
-    const loader = new DocxLoader("public/current.docx");
-    const data = await loader.load();
-
     const startTime = Date.now();
 
     console.log("Starting generation task...(this may take a while)");
     const res = await chain.call({
-      input_documents: data,
+      input_documents: document,
       question: text,
     });
     const endTime = Date.now();

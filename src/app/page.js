@@ -3,14 +3,18 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import axios from "axios";
 import icon from "@/assets/Icon.gif";
 import Image from "next/image";
+
+
 
 export default function Home() {
   const [file, setFile] = useState(null);
   const [res, setRes] = useState(null); // [status, message]
   const router = useRouter();
   const { toast } = useToast();
+
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -29,15 +33,16 @@ export default function Home() {
       const data = new FormData();
       data.set("file", file);
 
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: data,
-      });
+      const res = await axios.post("/api/upload", data)
       // handle the error
-      if (!res.ok) {
-        throw new Error(await res.text());
+      console.log(res)
+      if (res.status !== 200) {
+        throw new Error("Something went wrong");
       }
-
+      console.log(res)
+      const { text } = res.data;
+      console.log(text)
+      localStorage.setItem("text", text);
       setRes(["success", "File uploaded successfully!"]);
     } catch (e) {
       let title, description;
@@ -52,6 +57,7 @@ export default function Home() {
         title = "Error";
         description = "Something went wrong";
       }
+      console.log(e)
       setRes([title, description]);
     }
   };

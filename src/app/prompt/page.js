@@ -10,6 +10,7 @@ export default function Home() {
   // Handles the submit event on form submit.
   const [isLoading, setIsLoading] = useState(false);
   const [aiResponse, setAiresponse] = useState(null);
+  const router = useRouter();
   
   const handleSubmit = async (event) => {
     // Stop the form from submitting and refreshing the page.
@@ -17,18 +18,23 @@ export default function Home() {
 
     // Get data from the form.
     const content = event.target.content.value;
-    
-    console.log(content);
 
     const data = new FormData();
     data.append("text", content);
+    const file = localStorage.getItem("text")
+    if (!file) {
+      alert("Please upload a file first")
+      router.push("/")
+      return
+    }
+
+    data.append("file", file);
     setIsLoading(true);
     // Send the data to the API route
     const response = await axios.post("/api/summerize", data);
     console.log(response);
     const { text } = response.data;
-    const renderedText = text;
-    setAiresponse(renderedText);
+    setAiresponse(text);
 
     setIsLoading(false);
   };
